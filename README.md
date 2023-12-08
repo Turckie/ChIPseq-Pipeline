@@ -33,7 +33,7 @@ micromamba activate Turck_ChIPseq
 
 # EPIC and IDR based ChIP seq analysis
 
-Scripts starting with `EPIC-ChIP-seq_N*` can be run consecutively in the order indicated by the number to recapitulate the analysis of Krause et al. Alternatively, it would also be possible to create a `snakefile` or a custom `bash` script to run one block after the other.
+Scripts starting with `EPIC-ChIP-seq_N*` can be run consecutively in the order indicated by the number to recapitulate the analysis of Krause et al. Alternatively, it would also be possible to create a custom `bash` script to run one block after the other.
 
 The pipeline includes the generation of a custom `blacklist` of regions that are over or under-represented in the mapping and should therefore be excluded.
 
@@ -42,7 +42,7 @@ The annotation is based on the generation of a custom version of the `Araport11`
 
 1.  **Create a custom annotation for Araport11 and place it in the correct folder in HOMER**
 
-The `Homer` depository of genome annotations only contains the older `TAIR10` annotation, not the more recent `Arapor11` annotation. Furthermore, the default annotation is not quite suited for the small *Arabidopsis thaliana* genome since the TSS and TTS region are extended by 1000bp, which often includes the entire intergenic region. It is better to use a more fine-grained approach with Araport11. With the following helper script, Araport11 annotation is added to the Homer repository with a custom annotation of promoters.
+The `Homer` depository of genome annotations only contains the older `TAIR10` annotation, not the more recent `Araport11` annotation. Furthermore, the default annotation is not quite suited for the small *Arabidopsis thaliana* genome since the TSS and TTS region are extended by 1000bp, which often includes the entire intergenic region. It is better to use a more fine-grained approach with Araport11. With the following helper script, Araport11 annotation is added to the Homer repository with a custom annotation of promoters.
 
 With this custom Araport11 annotation, the strategy of assigning genes will be in this order:
 
@@ -62,7 +62,7 @@ Provided that you have first installed the TRB_Krause_et_al environment in `micr
 2. **Get the read data and create a sample table**
 
 With the study name on hand, the EBI website <https://www.ebi.ac.uk/ena/browser/view/PRJNA329443> the column selector allows the creation of a text file following the example below. Replace the study name with the relevant study. 
-The first columns are downloaded as `.csv` file from EBI, the `sample title` neede a bit fo by hand reformating and a last column with `Type` was added by hand. 
+The first columns are downloaded as `.csv` file from EBI, the `sample title` needed a bit of by-hand reformatting, and the last column with `Type` was added by hand. 
 
 ```text
 study_accession	sample_accession	run_accession	fastq_ftp	sra_md5	sample_title	Type
@@ -94,7 +94,14 @@ The data downloaded from the `ftp` link provided in the `Samples_ChIPseq.txt` wi
 
 ``` shell
 ./scripts/EPIC_ChIP-seq_1.get.reads.bash Samples.ChIP-seq.txt #downloads reads and annotations, expects "Samples.ChIP-seq.txt" in the working directory
-echo "download completed"
+echo "all download completed"
+```
+
+4. **Align reads to genome**
+
+```bash
+./scripts/EPIC_ChIP-seq_2.alignment.bash #aligns ChIP-seq reads
+echo "alignment completed"
 ```
 
 5. 
@@ -105,8 +112,7 @@ echo "download completed"
 This should run through, but it is probably better to write another shell script that can be submitted to a queue. Make sure that the Turck_ChIPseq environment is activated in the submission system and that all scripts are executable to the system (depending on the system set-up).
 
 ``` shell
-./scripts/EPIC_ChIP-seq_1.get.reads.bash Samples.ChIP-seq.txt #downloads reads and annotations, expects "Samples.ChIP-seq.txt" in the working directory
-echo "download completed"
+
 ./scripts/EPIC_ChIP-seq_2.alignment.bash #aligns ChIP-seq reads
 echo "alignment completed"
 ./scripts/EPIC_ChIP-seq_3.control_pooling.bash # creates pooled control samples since there is no obvious pairing between control and samples. Expects to find randomsplitbam.py in the scripts folder
