@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+data/reads_ChIP-seq
+data/reference
+data/alignments_ChIP-seq
+data/annotation
+data/ChIP-seq/EPIC-IDR
+data/ChIP-seq/RMASTER
