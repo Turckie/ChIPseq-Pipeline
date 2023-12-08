@@ -98,13 +98,21 @@ echo "all download completed"
 ```
 
 4. **Align reads to genome**
+The script expects to find the `Samples_ChIPseq.txt` folder and the base name of the reads under the header `run_accession`. It uses `bwa` for read alignment. If no index for the genome is found, the script will generate the index. The alignments will end up in a `data/alignmentsChIP-seq`. The reads are automatically sorted and indexed. A second version of alignments filtered to contain only uniquely mapping reads is also stored.
 
 ```bash
 ./scripts/EPIC_ChIP-seq_2.alignment.bash #aligns ChIP-seq reads
 echo "alignment completed"
 ```
+Before continuing with the rest of the analysis it is good practice to have a look at the alignments, e.g. in the IGV browser. 
+* Can some peaks, e.g. at already known target genes be detected?
+* Does the background look even, with fluctuations that look slightly like nucleosome profiles or *spikey*?
+* Do the controls/Inputs look more evenly distributed than the ChIP samples or do they have even more spikes?
+* Are there tracks that look like outliers?
 
-5. 
+5. **Pool controls and inputs**
+Usually the replicates of ChIP, input and control data are not linked. Since the controls can sometimes also show problems, such as random spikes, it is a better strategy to pool the controls
+6. 
 
 
 2.  **ChIP-seq analysis**
@@ -113,8 +121,7 @@ This should run through, but it is probably better to write another shell script
 
 ``` shell
 
-./scripts/EPIC_ChIP-seq_2.alignment.bash #aligns ChIP-seq reads
-echo "alignment completed"
+
 ./scripts/EPIC_ChIP-seq_3.control_pooling.bash # creates pooled control samples since there is no obvious pairing between control and samples. Expects to find randomsplitbam.py in the scripts folder
 echo "control samples are pooled"
 ./scripts/
