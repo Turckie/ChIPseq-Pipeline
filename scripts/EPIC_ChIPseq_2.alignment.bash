@@ -37,11 +37,24 @@ echo "Finished building index files for bwa"
 
 #align with standard parameters, sort the aligned reads, and save as .bam formatted files
 
+file="$1"
+#which column has the "fastq files"?
+Col=$(awk -F ',' 'NR==1{for(i=1;i<=NF;i++){if($i=="run_accession"){col=i;break}}}{print $col}' "${working_directory}/${file}")
+
+#now align the fastq files:
+
+while read line; do
+fastq=$(echo $line | cut -d '\t' -f ${Col})
+bwa mem -t 4 ${path_reference}/TAIR10bwaidx ${fastq}.fastq.gz | samtools view -b - | samtools sort - -o ${path_alignments}/"${i%.fastq.gz}.bam" 
+samtools index ${path_alignments}/"${i%.fastq.gz}.bam" 
+
+done <(tail -n +2 "${working_directory}/${file}")
+
 cd  ${path_reads}
 for i in *fastq.gz
 do
-bwa mem -t 4 ${path_reference}/TAIR10bwaidx $i | samtools view -b - | samtools sort - -o ${path_alignments}/"${i%.fastq.gz}.bam" 
-samtools index ${path_alignments}/"${i%.fastq.gz}.bam" 
+bwa mem -t 4 ${path_reference}/TAIR10bwaidx ${path_reads}/${i} | samtools view -b - | samtools sort - -o ${path_alignments}/${fastq}.bam 
+samtools index ${path_alignments}/${fastq}.bam 
 done
 
 #count the read and mapping statistics
