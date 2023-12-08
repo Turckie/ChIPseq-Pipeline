@@ -8,7 +8,7 @@
 ##############################################################################################################################
 
 working_directory=$(pwd)
-path_reads=${working_directory}/data/reads_ChIP-seq
+path_reads=${working_directory}/data/fastq
 path_alignments=${working_directory}/data/alignments_ChIP-seq
 path_reference=${working_directory}/data/reference
 path_results=${working_directory}/results/ChIP-seq
@@ -24,9 +24,19 @@ mkdir -p ${path_results}
 
 #If bwa is used for the first time on this genome, a genome index needs to be created. Uncomment and add the correct path to your genome fasta file.
 
-#bwa index -p ${path_reference}/TAIR10bwaidx -a bwtsw ${path_reference}/TAIR10_chr_all.fas
 
-#align with standard parameters, sort the aligned reads and save as .bam formated files
+#Make a genome index for the available read length
+
+if [  -e ${path_reference}/TAIR10bwaidx ] ; then
+    echo "There already seems to be a bwa indexed reference genome in the correct folder"
+else
+echo "Building index files for bwa"
+bwa index -p ${path_reference}/TAIR10bwaidx -a bwtsw ${path_reference}/TAIR10_chr_all.fas
+fi
+echo "Finished building index files for bwa"
+
+#align with standard parameters, sort the aligned reads, and save as .bam formatted files
+
 cd  ${path_reads}
 for i in *fastq.gz
 do
