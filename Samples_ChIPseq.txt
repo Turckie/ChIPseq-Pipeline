@@ -1,0 +1,2 @@
+Name	Alias	Category	Type	Replicate	Experiment	Project	Submission	EBI-accession	link	md5sum
+3546_E_run498_500_ACCTCAAT_all	Col-0_ChIP_R1	Col-0	control	R1	1	PRJEB63124	ERA23789639	ERR11556839		a23becd6f20cf4572199c3748f21e5a4
