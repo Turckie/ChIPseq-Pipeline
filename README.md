@@ -61,8 +61,8 @@ Provided that you have first installed the TRB_Krause_et_al environment in `micr
 
 2. **Get the read data and create a sample table**
 
-With the study name on hand, the EBO website <https://www.ebi.ac.uk/ena/browser/view/PRJNA329443> the column selector allows the creation of a text file following the example below. Replace the study name with the relevant study. 
-
+With the study name on hand, the EBI website <https://www.ebi.ac.uk/ena/browser/view/PRJNA329443> the column selector allows the creation of a text file following the example below. Replace the study name with the relevant study. 
+The first columns are downloaded as `.csv` file from EBI, the `sample title` neede a bit fo by hand reformating and a last column with `Type` was added by hand. 
 
 ```text
 study_accession	sample_accession	run_accession	fastq_ftp	sra_md5	sample_title	Type
@@ -87,9 +87,17 @@ PRJNA329443	SAMN05412827	SRR3928039	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/009/SRR3
 PRJNA329443	SAMN05412829	SRR3928041	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/001/SRR3928041/SRR3928041.fastq.gz	df970632445c0d3f04a700fe7081bf1c	AZF1-ChIP-Col-bioRep1	AZF1
 PRJNA329443	SAMN05412832	SRR3928044	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/004/SRR3928044/SRR3928044.fastq.gz	0022af5eebed98cf0a0f75ebc835be0b	BPC1-ChIP-Col-bioRep1	BPC1
 PRJNA329443	SAMN05412833	SRR3928045	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/005/SRR3928045/SRR3928045.fastq.gz	e5643cfa69c692af3d03ef9a92e20cff	BPC1-ChIP-Col-bioRep2	BPC1
-´´´
+```
 
+3. **Download the read data**
+The data downloaded from the `ftp` link provided in the `Samples_ChIPseq.txt` will be saved in `data/fastq`. The script also checks if the download was complete using the provided md5 checksums.
 
+``` shell
+./scripts/EPIC_ChIP-seq_1.get.reads.bash Samples.ChIP-seq.txt #downloads reads and annotations, expects "Samples.ChIP-seq.txt" in the working directory
+echo "download completed"
+```
+
+5. 
 
 
 2.  **ChIP-seq analysis**
