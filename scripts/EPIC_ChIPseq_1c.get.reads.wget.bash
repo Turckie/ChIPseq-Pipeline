@@ -32,17 +32,22 @@ do
     wget --no-check-certificate -P ${path_QC} ${line}
 done
 #unzip all GC files and delete the zipped files
-for i in ${path_QC}/*zip
+cd ${path_QC}
+for i in *zip
 do
 unzip ${i}
 rm ${i}
 done
+
+
+cd ${working_directory}
+
 #check if download is complete
 
-awk 'NR==1 {for (i=1; i<=NF; i++) {f[$i] = i}}
-{print $(f["file"]), $(f["md5sum"]) }' Samples.txt >md5sum.txt
+awk 'BEGIN{FS=OFS="\t"} NR==1 {for (i=1; i<=NF; i++) {f[$i] = i}}
+{print $(f["md5sum"]), $(f["file"]) }' Samples.txt >${path_reads}/md5sum.txt
 
-for i in ${path_reads}/*fastq.gz
-do
-md5sum -c md5sum.txt $i >>${path_reads}/md5_check.txt
-done
+cd ${path_reads}
+
+
+md5sum -c ${path_reads}/md5sum.txt >>${path_reads}/md5_check.txt
