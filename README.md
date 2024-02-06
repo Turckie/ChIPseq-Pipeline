@@ -11,7 +11,7 @@ Install `micromamba` (or mamba, conda, anaconda) on a linux based server followi
 
 ## Clone this GitHub repository
 
-Move to the location that you want to set up your working_directory and type
+Move to the location where you want to set up your working_directory and type
 
 ``` bash
 gh repo clone Turckie/ChIPseq-Pipeline
@@ -60,42 +60,45 @@ Provided that you have first installed the TRB_Krause_et_al environment in `micr
 ```
 
 2. **Get the read data and create a sample table**
-
+*In case of published data:*
 With the study name on hand, the EBI website <https://www.ebi.ac.uk/ena/browser/view/PRJNA329443> the column selector allows the creation of a text file following the example below. Replace the study name with the relevant study. 
-The first columns are downloaded as `.csv` file from EBI, the `sample title` needed a bit of by-hand reformatting, and the last column with `Type` was added by hand. 
+The first columns are downloaded as `.csv` file from EBI, the `sample title` needed a bit of by-hand reformatting, and the last column with `type` is added by hand. Safe the table as Linux-formated (end-of-line) text file. The file `Samples-ChIPseq.txt` contains an example. 
 
 ```text
-study_accession	sample_accession	run_accession	fastq_ftp	sra_md5	sample_title	Type
-PRJNA329443	SAMN05412815	SRR3928027	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/007/SRR3928027/SRR3928027.fastq.gz	b1040c4f369409b43a93bcfd56d100d8	H3-ChIP-Col-bioRep2	H3
-PRJNA329443	SAMN05412819	SRR3928031	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/001/SRR3928031/SRR3928031.fastq.gz	ee4c505db7944472bcb856a8a9592f40	H3K27me3-ChIP-Col-bioRep3	H3K27me3
-PRJNA329443	SAMN05412820	SRR3928032	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/002/SRR3928032/SRR3928032.fastq.gz	d98fe7b0ec6d62fb58fbe3945f16336c	Input-C24-bioRep-1	Input-C24
-PRJNA329443	SAMN05412821	SRR3928033	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/003/SRR3928033/SRR3928033.fastq.gz	b15b44a3d3f8f02d3e507f2fd493033b	Input-chromatin-C24-bioRep2	Input-C24
-PRJNA329443	SAMN05412823	SRR3928035	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/005/SRR3928035/SRR3928035.fastq.gz	1e8b5476f61a1f43f51ef72a260ec773	FIE-ChIP-C24-bioRep1	FIE
-PRJNA329443	SAMN05412824	SRR3928036	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/006/SRR3928036/SRR3928036.fastq.gz	f9efcbb361d195612ac51a88e43c06cd	FIE-ChIP-C24-bioRep2	FIE
-PRJNA329443	SAMN05412825	SRR3928037	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/007/SRR3928037/SRR3928037.fastq.gz	3f75ea4ba64f6abe9beb23644fbfe3f3	FIE-ChIP-C24-bioRep3	FIE
-PRJNA329443	SAMN05412831	SRR3928043	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/003/SRR3928043/SRR3928043.fastq.gz	cb22caac4d2ab22082712cc19b8a7c88	AZF1-ChIP-Col-bioRep3	AZF
-PRJNA329443	SAMN05412814	SRR3928026	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/006/SRR3928026/SRR3928026.fastq.gz	ae926f0df55cf4008cab7769aeb1354f	H3-ChIP-Col-bioRep1	H3
-PRJNA329443	SAMN05412817	SRR3928029	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/009/SRR3928029/SRR3928029.fastq.gz	aad35a8b51bf22ad30046cb813674eea	H3K27me3-ChIP-Col-bioRep1	H3K27me3
-PRJNA329443	SAMN05412828	SRR3928040	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/000/SRR3928040/SRR3928040.fastq.gz	5e5bd58e148ed2facf6c435ced8755e6	Input-Col-bioRep3	Input
-PRJNA329443	SAMN05412830	SRR3928042	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/002/SRR3928042/SRR3928042.fastq.gz	75df4b72e40858943740eefe8d37b8f3	AZF1-ChIP-Col-bioRep2	AZF1
-PRJNA329443	SAMN05412834	SRR3928046	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/006/SRR3928046/SRR3928046.fastq.gz	b2016569c55dc2d36d083b7bdf8f26ad	BPC1-ChIP-Col-bioRep3	BPC1
-PRJNA329443	SAMN05412816	SRR3928028	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/008/SRR3928028/SRR3928028.fastq.gz	d8593d7239217c4ffe61c1a7e1712eaf	H3-ChIP-Col-bioRep3	H3
-PRJNA329443	SAMN05412818	SRR3928030	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/000/SRR3928030/SRR3928030.fastq.gz	eb6cbd916c0fc6d3925570429451f93a	H3K27me3-ChIP-Col-bioRep2	H3K27me3
-PRJNA329443	SAMN05412822	SRR3928034	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/004/SRR3928034/SRR3928034.fastq.gz	dbfe39ea87385667aae249df5de30a98	Input-C24-bioRep3	Input-C24
-PRJNA329443	SAMN05412826	SRR3928038	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/008/SRR3928038/SRR3928038.fastq.gz	7ca717afa2614a66fb334986510675a9	Input-Col-bioRep1	Input
-PRJNA329443	SAMN05412827	SRR3928039	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/009/SRR3928039/SRR3928039.fastq.gz	5ccd3c657f6fcfa17bf11513cb201530	Input-Col-bioRep2	Input
-PRJNA329443	SAMN05412829	SRR3928041	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/001/SRR3928041/SRR3928041.fastq.gz	df970632445c0d3f04a700fe7081bf1c	AZF1-ChIP-Col-bioRep1	AZF1
-PRJNA329443	SAMN05412832	SRR3928044	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/004/SRR3928044/SRR3928044.fastq.gz	0022af5eebed98cf0a0f75ebc835be0b	BPC1-ChIP-Col-bioRep1	BPC1
-PRJNA329443	SAMN05412833	SRR3928045	ftp.sra.ebi.ac.uk/vol1/fastq/SRR392/005/SRR3928045/SRR3928045.fastq.gz	e5643cfa69c692af3d03ef9a92e20cff	BPC1-ChIP-Col-bioRep2	BPC1
+study_accession	sample_accession	run_accession	fastq_ftp	sra_md5	sample_title	type
+
 ```
+*In case of data provided from a sequencing centre*
+Data from the Max Planck Genome Centre Cologne are downloaded from a WebSafe server. Prepare a `.txt` file with the following headers (the file `Samples.txt` contains an example:
+
+```text
+link	file	md5sum	sample	type QC
+
+```
+
 
 3. **Download the read data**
 The data downloaded from the `ftp` link provided in the `Samples_ChIPseq.txt` will be saved in `data/fastq`. The script also checks if the download was complete using the provided md5 checksums.
 
 ``` shell
-./scripts/EPIC_ChIP-seq_1.get.reads.bash Samples.ChIP-seq.txt #downloads reads and annotations, expects "Samples.ChIP-seq.txt" in the working directory
-echo "all download completed"
+#for published data
+./scripts/EPIC_ChIP-seq_1.get.reads.bash Samples.ChIP-seq.txt
+#for genome center data
+./scripts/EPIC_ChIP-seq_1c.get.reads.wget.bash Samples.txt
 ```
+Alternatively to all this scripting, the data can be downloaded "by Hand" and stored in the directory `data/fastq`. This can be done via a browser or by using the terminal:
+
+``` shell
+#first create the folder in which the data will be placed
+
+working_directory=$(pwd)
+path_reads=${working_directory}/data/fastq
+mkdir -p ${path_reads} 
+
+#use wget to download data into a specificed folder
+wget -P ${path_reads} ftp://ftp.sra.ebi.ac.uk/vol1/fastq/ERR216/001/ERR2167261/ERR2167261.fastq.gz #example for one link
+```
+
 
 4. **Align reads to genome**
 The script expects to find the `Samples_ChIPseq.txt` folder and the base name of the reads under the header `run_accession`. It uses `bwa` for read alignment. If no index for the genome is found, the script will generate the index. The alignments will end up in a `data/alignmentsChIP-seq`. The reads are automatically sorted and indexed. A second version of alignments filtered to contain only uniquely mapping reads is also stored.
@@ -103,6 +106,10 @@ The script expects to find the `Samples_ChIPseq.txt` folder and the base name of
 ```bash
 ./scripts/EPIC_ChIP-seq_2.alignment.bash #aligns ChIP-seq reads
 echo "alignment completed"
+#if the script is submitted using the lsf queue, use this command
+#bsub -q multicore20 -n 8 -R "span[hosts=1] rusage[mem=40000]" -M 48000 ./scripts/EPIC_ChIPseq_2.alignment.bash Samples_ChIPseq.txt
+
+
 ```
 Before continuing with the rest of the analysis it is good practice to have a look at the alignments, e.g. in the IGV browser. 
 * Can some peaks, e.g. at already known target genes be detected?
