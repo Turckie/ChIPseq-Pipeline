@@ -10,6 +10,7 @@
 working_directory=$(pwd)
 path_reads=${working_directory}/data/fastq
 path_alignments=${working_directory}/data/alignments_ChIP-seq
+#adjust the line below to point to your reference file folder
 path_reference=${working_directory}/data/reference
 path_results=${working_directory}/results/ChIP-seq
 
@@ -27,35 +28,31 @@ mkdir -p ${path_results}
 
 #Make a genome index for the available read length
 
-if [  -e ${path_reference}/TAIR10bwaidx ] ; then
+if [  -e ${path_reference}/TAIR10bwaidx.ann ] ; then
     echo "There already seems to be a bwa indexed reference genome in the correct folder"
 else
 echo "Building index files for bwa"
 bwa index -p ${path_reference}/TAIR10bwaidx -a bwtsw ${path_reference}/TAIR10_chr_all.fas
-fi
 echo "Finished building index files for bwa"
+fi
+
 
 #align with standard parameters, sort the aligned reads, and save as .bam formatted files
 
 file="$1"
 #which column has the "fastq files"?
-Col=$(awk -F ',' 'NR==1{for(i=1;i<=NF;i++){if($i=="run_accession"){col=i;break}}}{print $col}' "${working_directory}/${file}")
+col_num=$(awk -F '\t' 'NR==1{for(i=1;i<=NF;i++)if($i=="run_accession"){print i;exit}}' "${working_directory}/${file}")
 
 #now align the fastq files:
-
-while read line; do
-fastq=$(echo $line | cut -d '\t' -f ${Col})
-bwa mem -t 4 ${path_reference}/TAIR10bwaidx ${fastq}.fastq.gz | samtools view -b - | samtools sort - -o ${path_alignments}/"${i%.fastq.gz}.bam" 
-samtools index ${path_alignments}/"${i%.fastq.gz}.bam" 
-
-done <(tail -n +2 "${working_directory}/${file}")
-
-cd  ${path_reads}
-for i in *fastq.gz
+cut -f$col_num ${working_directory}/${file} | tail -n +2 | while read line
 do
-bwa mem -t 4 ${path_reference}/TAIR10bwaidx ${path_reads}/${i} | samtools view -b - | samtools sort - -o ${path_alignments}/${fastq}.bam 
-samtools index ${path_alignments}/${fastq}.bam 
+    # Execute the line
+    echo ${line}
+    bwa mem -t 4 ${path_reference}/TAIR10bwaidx ${path_reads}/${line}.fastq.gz | samtools view -b - | samtools sort - -o ${path_alignments}/${line}.bam
+    samtools index ${path_alignments}/${line}.bam
 done
+
+
 
 #count the read and mapping statistics
 cd ${path_alignments}
